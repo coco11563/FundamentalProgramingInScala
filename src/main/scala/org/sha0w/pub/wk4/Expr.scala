@@ -1,32 +1,44 @@
 package org.sha0w.pub.wk4
 
-object Expr {
-  def eval(expr: Expr) : Int = expr match {
-    case sum(e1, e2) => eval(e1) + eval(e2)
-    case prod(e1, e2) => eval(e1) * eval(e2)
-    case number(e) =>  e
-    case _ => throw new Error
-  }
-
-  def show(expr: Expr) : String = expr match {
-    case sum(e1, e2) => "(" + show(e1) + "+" + show(e2) + ")"
-    case prod(e1, e2) => show(e1) + "*" + show(e2)
-    case Var(e) => e
-    case number(e) => String.valueOf(e)
-    case _ => throw new Error
-  }
-
-
-  def main(args: Array[String]): Unit = {
-    println(eval(sum(number(1), number(2))))
-    println(show(sum(number(1), number(2))))
-    println(show(prod(sum( number(2), Var("x")), Var("y"))))
-  }
+trait Expr {
+  def isNumber : Boolean
+  def isSum : Boolean
+  def numValue : Int
+  def leftOP : Expr
+  def rightOP : Expr
 }
 
-trait Expr
-case class sum (e1:Expr, e2:Expr) extends Expr
-case class number (e:Int) extends Expr
-case class Var(string: String) extends Expr {}
-case class prod(e1 : Expr, e2 : Expr) extends Expr
+class Number(n : Int) extends Expr {
+  override def isNumber: Boolean = true
 
+  override def isSum: Boolean = false
+
+  override def numValue: Int = n
+
+  override def leftOP: Expr = throw new Error("num.leftOP")
+
+  override def rightOP: Expr = throw new Error("num.rightOP")
+}
+
+
+class Sum(l:Expr, r:Expr) extends Expr {
+  def left : Expr = l
+
+  def right : Expr = r
+
+  override def isNumber: Boolean = false
+
+  override def isSum: Boolean = true
+
+  override def numValue: Int = throw new Error("sum.numValue")
+
+  override def leftOP: Expr = left
+
+  override def rightOP: Expr = right
+
+  def eval(expr: Expr) : Int = {
+    if (expr.isNumber) expr.numValue
+    else if (expr.isSum) eval(expr.leftOP) + eval(expr.rightOP)
+    else throw new Error("Unknown Expr")
+  }
+}
