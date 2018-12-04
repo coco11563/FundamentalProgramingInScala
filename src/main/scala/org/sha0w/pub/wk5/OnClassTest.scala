@@ -36,12 +36,12 @@ object OnClassTest {
     case List() => xs
     case y :: ys => y :: flatten(ys)
   }
-  def squareList(xs: List[Int]): List[Int] =
-    xs match {
-      case Nil => Nil
-      case y :: ys => y* y :: squareList(ys)
-    }
-//
-  def squareList(xs: List[Int]): List[Int] =
-    xs map (x => x * x)
+//  def squareList(xs: List[Int]): List[Int] =
+//    xs match {
+//      case Nil => Nil
+//      case y :: ys => y* y :: squareList(ys)
+//    }
+////
+//  def squareList(xs: List[Int]): List[Int] =
+//    xs map (x => x * x)
 }
